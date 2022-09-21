@@ -67,6 +67,22 @@ public interface Consumer<T> {
 public void ifPresent(Consumer<? super T>consumer){
         if(value!=null)
         consumer.accept(value);
-}
+        }
 ```
 
+```mermaid
+flowchart TD
+
+A["新建视图"] -->x2[...]-->|"查materialization表内
+（同存储类别同storeId的）"|B{"指定group有
+正在运行的定时任务"}
+B --> |YES| E["跳过"]
+B --> |NO| C["新增记录"]
+C --> D["逐个提交group灌库任务到Gear"]-->F["save新物化表记录"]
+
+A1["更新job的定时任务"]-->X1["查询定时任务执行列表"]-->B1["生成新记录"]-->c1["存入job表"]
+A2["上线"]-->|"查materialization表"|B2{"指定group有coId
+且swich为true"}
+B2-->|"YES"| C2["跳过"]
+B2-->|"NO"|D2["运行并更新coId和switch"]
+```

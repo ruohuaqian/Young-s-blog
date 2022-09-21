@@ -1,0 +1,3 @@
+#Gson杂谈
+- @SerializedName
+    字段值在json中的别名
